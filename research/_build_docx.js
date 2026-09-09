@@ -164,12 +164,10 @@ function convert(md) {
 
 // ---------- assemble ----------
 const base = '/home/user/Claude-skill/research/';
-let main = fs.readFileSync(base + '研究背景与文献综述_v5.md', 'utf8');
-let appx = fs.readFileSync(base + '附录A_海外疑似白马窑产品的文献线索.md', 'utf8');
-
-// strip the top-level H1 from each (we build our own title page)
-main = main.replace(/^#\s+.*\n/, '').replace(/^##\s+研究背景与研究综述（第五稿 v5）\n/m, '');
-appx = appx.replace(/^#\s+.*\n/, '');
+let main = fs.readFileSync(base + '结题报告/结题报告_第一至四章.md', 'utf8');
+// strip title block (handled by our own title page)
+main = main.replace(/^#\s+广东惠州白马窑[\s\S]*?^---\n/m, '');
+const appx = '';
 
 const titlePage = [
   new Paragraph({ spacing: { before: 2400, after: 200 }, alignment: AlignmentType.CENTER,
@@ -177,12 +175,14 @@ const titlePage = [
   new Paragraph({ spacing: { after: 700 }, alignment: AlignmentType.CENTER,
     children: [new TextRun({ text: "及微（痕）量元素数据库构建", bold: true, size: 40, font: FH })] }),
   new Paragraph({ spacing: { after: 1400 }, alignment: AlignmentType.CENTER,
-    children: [new TextRun({ text: "研究背景与研究综述", size: 30, font: FH, color: "444444" })] }),
+    children: [new TextRun({ text: "结  题  报  告", size: 32, font: FH, color: "333333" })] }),
+  new Paragraph({ spacing: { after: 900 }, alignment: AlignmentType.CENTER,
+    children: [new TextRun({ text: "（第一至四章）", size: 24, font: FH, color: "666666" })] }),
   ...[
     ["项　目", "广东省哲学社会科学规划 2025 年度常规项目（青年项目）"],
     ["学科分类", "历史学（考古学）"],
     ["负 责 人", "吴　博（中山大学）"],
-    ["稿　次", "第五稿 v5（含附录 A）"],
+    ["稿　次", "第一至四章正文稿"],
   ].map(([k, v]) => new Paragraph({
     spacing: { after: 130 }, alignment: AlignmentType.CENTER,
     children: [new TextRun({ text: k + "：" + v, size: 22, font: F })]
@@ -199,16 +199,12 @@ const toc = [
   new Paragraph({ children: [new PageBreak()] }),
 ];
 
-const appxTitle = [
-  new Paragraph({ children: [new PageBreak()] }),
-  new Paragraph({ heading: HeadingLevel.HEADING_1, spacing: { before: 200, after: 200 },
-    children: [new TextRun({ text: "附录 A　海内外「疑似白马窑」产品的文献线索", bold: true, size: 34, font: FH })] }),
-];
+const appxTitle = [];
 
 const doc = new Document({
   creator: "吴博",
-  title: "广东惠州白马窑仿龙泉青瓷工艺探析及微（痕）量元素数据库构建——研究背景与研究综述",
-  description: "省社科规划课题研究背景与研究综述",
+  title: "广东惠州白马窑仿龙泉青瓷工艺探析及微（痕）量元素数据库构建——结题报告",
+  description: "广东省哲学社会科学规划2025年度项目结题报告（第一至四章）",
   styles: {
     default: {
       document: { run: { font: F, size: 21 } },
@@ -237,7 +233,7 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then(buf => {
-  const out = base + '白马窑研究背景与文献综述.docx';
+  const out = base + '结题报告/白马窑结题报告_第一至四章.docx';
   fs.writeFileSync(out, buf);
   console.log('written:', out, (buf.length / 1024).toFixed(0) + ' KB');
 });
